@@ -9,7 +9,6 @@ import serveFileMetadata from './actions/serveFileMetadata.js';
 import serveFile from './actions/serveFile.js';
 import serveMainPage from './actions/serveMainPage.js';
 import serveModule from './actions/serveModule.js';
-import serveStats from './actions/serveStats.js';
 
 import allowQuery from './middleware/allowQuery.js';
 import findEntry from './middleware/findEntry.js';
@@ -49,7 +48,6 @@ export default function createServer() {
     app.use(requestLog);
 
     app.get('/', serveMainPage);
-    app.get('/api/stats', serveStats);
 
     app.use(redirectLegacyURLs);
 
