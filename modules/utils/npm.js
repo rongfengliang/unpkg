@@ -1,5 +1,5 @@
 import url from 'url';
-import https from 'https';
+import http from 'http';
 import gunzip from 'gunzip-maybe';
 import LRUCache from 'lru-cache';
 
@@ -8,9 +8,6 @@ import bufferStream from './bufferStream.js';
 const npmRegistryURL =
   process.env.NPM_REGISTRY_URL || 'https://registry.npmjs.org';
 
-const agent = new https.Agent({
-  keepAlive: true
-});
 
 const oneMegabyte = 1024 * 1024;
 const oneSecond = 1000;
@@ -26,7 +23,7 @@ const notFound = '';
 
 function get(options) {
   return new Promise((accept, reject) => {
-    https.get(options, accept).on('error', reject);
+    http.get(options, accept).on('error', reject);
   });
 }
 
@@ -46,11 +43,11 @@ async function fetchPackageInfo(packageName, log) {
 
   log.debug('Fetching package info for %s from %s', packageName, infoURL);
 
-  const { hostname, pathname } = url.parse(infoURL);
+  const { hostname, pathname,port } = url.parse(infoURL);
   const options = {
-    agent: agent,
     hostname: hostname,
     path: pathname,
+    port:port,
     headers: {
       Accept: 'application/json'
     }
@@ -173,11 +170,11 @@ export async function getPackage(packageName, version, log) {
 
   log.debug('Fetching package for %s from %s', packageName, tarballURL);
 
-  const { hostname, pathname } = url.parse(tarballURL);
+  const { hostname, pathname,port } = url.parse(tarballURL);
   const options = {
-    agent: agent,
     hostname: hostname,
-    path: pathname
+    path: pathname,
+    port:port
   };
 
   const res = await get(options);
